@@ -80,7 +80,16 @@ def svm_loss_vectorized(W, X, y, reg):
     #############################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-    pass
+    scores = X.dot(W) # N by C
+    num_train = X.shape[0]
+    num_classes = W.shape[1]
+    correct_class_scores = scores[range(X.shape[0]), y] # 1 by N
+    delta = np.ones(scores.shape)
+    delta[range(X.shape[0]), y] = 0 
+    margins = np.maximum(0, scores - np.matrix(correct_class_scores).T + delta)  # N by C
+
+    loss += np.mean(np.sum(margins, axis = 1)) 
+    loss += reg * np.sum(W*W) 
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
@@ -95,7 +104,15 @@ def svm_loss_vectorized(W, X, y, reg):
     #############################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-    pass
+    indicators = margins  # N by C
+    indicators[margins > 0] = 1
+    correct_indicators = np.sum(indicators, axis = 1) # N by 1
+    indicators[range(X.shape[0]),y] -= correct_indicators.T # 1 by N
+    dW += np.dot(X.T, indicators) # 3073 by C
+    dW /= X.shape[0]  
+
+    dW += 2 * reg * W   
+  
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 

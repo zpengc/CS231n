@@ -45,7 +45,7 @@ class LinearClassifier(object):
         )  # assume y takes values 0...K-1 where K is number of classes
         if self.W is None:
             # lazily initialize W
-            self.W = 0.001 * np.random.randn(dim, num_classes)
+            self.W = 0.001 * np.random.randn(dim, num_classes) # 3073 by 10
 
         # Run stochastic gradient descent to optimize W
         loss_history = []
@@ -66,8 +66,9 @@ class LinearClassifier(object):
             #########################################################################
             # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-            pass
-
+            mask = np.random.choice(range(num_train), batch_size, replace = False)
+            X_batch = X[mask]
+            y_batch = y[mask]
             # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
             # evaluate loss and gradient
@@ -81,7 +82,7 @@ class LinearClassifier(object):
             #########################################################################
             # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-            pass
+            self.W -= learning_rate * grad
 
             # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
@@ -111,7 +112,7 @@ class LinearClassifier(object):
         ###########################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-        pass
+        y_pred = np.argmax(X.dot(self.W), axis = 1)
 
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
         return y_pred
