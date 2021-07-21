@@ -24,8 +24,8 @@ def softmax_loss_naive(W, X, y, reg):
     """
     # Initialize the loss and gradient to zero.
     loss = 0.0
-    dW = np.zeros_like(W)
-
+    dW = np.zeros_like(W) # D by C
+    num_train = X.shape[0]
     #############################################################################
     # TODO: Compute the softmax loss and its gradient using explicit loops.     #
     # Store the loss in loss and the gradient in dW. If you are not careful     #
@@ -33,9 +33,21 @@ def softmax_loss_naive(W, X, y, reg):
     # regularization!                                                           #
     #############################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+    
+    for i in range(num_train):
+      scores = X[i,:].dot(W) # 1 by C
+      probabilities = np.exp(scores)/np.sum(np.exp(scores)) # 1 by C
+      loss -= np.log(probabilities[y[i]])
+      gradient_q = probabilities.reshape(1,-1) # 1 by C(1-dimension to 2-dimension)
+      gradient_q[0, y[i]] += -1
 
-    pass
+      dW += X[i,:].reshape(-1,1).dot(gradient_q) # N by C
 
+    loss /= num_train
+    loss += reg * np.sum(W*W)
+
+    dW /= num_train
+    dW += 2 * reg * W
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
     return loss, dW
@@ -49,7 +61,9 @@ def softmax_loss_vectorized(W, X, y, reg):
     """
     # Initialize the loss and gradient to zero.
     loss = 0.0
-    dW = np.zeros_like(W)
+    dW = np.zeros_like(W) # D by C
+    num_train = X.shape[0]
+
 
     #############################################################################
     # TODO: Compute the softmax loss and its gradient using no explicit loops.  #
@@ -58,8 +72,21 @@ def softmax_loss_vectorized(W, X, y, reg):
     # regularization!                                                           #
     #############################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+    scores = X.dot(W) # N by C
+    exp_scores = np.exp(scores) # N by C
+    probabilities = exp_scores / np.sum(exp_scores, axis = 1).reshape(-1, 1)  # N by C
 
-    pass
+    loss -= np.sum(np.log(probabilities[range(num_train), y])) #data loss
+
+    gradient_q = probabilities  # N by C
+    gradient_q[range(num_train), y] += -1
+    dW = X.T.dot(gradient_q)  # D by C
+
+    loss /= num_train
+    loss += reg * np.sum(W*W)
+
+    dW /= num_train
+    dW += 2 * reg * W
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
