@@ -1,7 +1,7 @@
 # CS231n
 :dart:
 
-## [Assignment 1]([Assignment 1 (cs231n.github.io)](https://cs231n.github.io/assignments2021/assignment1/))
+## [Assignment 1](https://cs231n.github.io/assignments2021/assignment1/)
 
 - Q1: k-Nearest Neighbor classifier
 - Q2: Training a Support Vector Machine
